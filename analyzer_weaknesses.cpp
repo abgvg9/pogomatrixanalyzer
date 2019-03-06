@@ -5,9 +5,9 @@
 /*
 Run Instructions:
   For compilation:
-  g++ analyzer.cpp -std=c++11 -o analyzer
+  g++ analyzer_weaknesses.cpp -std=c++11 -o analyzer_weaknesses
   To run:
-  ./analyzer <(input matrix).csv >(output file).csv
+  ./analyzer_weaknesses <(input matrix).csv >(output file).csv
 */
 
 #include <iostream>
@@ -141,30 +141,22 @@ int main()
       for(int k = j + 1; k < species.size(); k++)
       {
         //vector to hold the highest scores for all matrix matchups of the 3 species in question
-        vector<float> highest_scores;
+        vector<float> average_scores;
 
         for(int l = 0; l < species.size(); l++)
         {
-          //get the highest score across the 3 species being tested
-          float highest_score = matrix[i][l];
-          if(matrix[j][l] > highest_score)
-          {
-            highest_score = matrix[j][l];
-          }
-          if(matrix[k][l] > highest_score)
-          {
-            highest_score = matrix[k][l];
-          }
+          //get the average score across the 3 species being tested
+          float average = (matrix[i][l] + matrix[j][l] + matrix[k][l]) / 3;
 
           //add the high score to the vector
-          highest_scores.push_back(highest_score);
+          average_scores.push_back(average);
         }
 
         //get the average of the highest scores for an easy to compare value for the team composition
         float average_score = 0;
         for(int l = 0; l < species.size(); l++)
         {
-          average_score += highest_scores[l];
+          average_score += average_scores[l];
         }
         average_score = average_score / species.size();
 
