@@ -14,6 +14,18 @@
 
 using namespace std;
 
+class team
+{
+  public:
+    float score = 0;
+    string species1 = "";
+    string moveset1 = "";
+    string species2 = "";
+    string moveset2 = "";
+    string species3 = "";
+    string moveset3 = "";
+};
+
 int main()
 {
   //2d vector to hold the values of the matrix
@@ -98,6 +110,7 @@ int main()
 
   }
 
+  /*
   //print out the constructed vectors
   for(int i = 0; i < species.size(); i++)
   {
@@ -108,6 +121,83 @@ int main()
       cout << " " << matrix[i][j];
     }
     cout << endl;
+  }
+  */
+
+  //a vector to hold all team scores
+  vector<team> team_scores;
+
+  //3 nested loops to run through and get all team combinations and associate a score with them
+  //the higher the score, the better the team coverage
+  for(int i = 0; i < species.size(); i++)
+  {
+    for(int j = i + 1; j < species.size(); j++)
+    {
+      for(int k = j + 1; k < species.size(); k++)
+      {
+        //vector to hold the highest scores for all matrix matchups of the 3 species in question
+        vector<float> highest_scores;
+
+        for(int l = 0; l < species.size(); l++)
+        {
+          //get the highest score across the 3 species being tested
+          float highest_score = matrix[i][l];
+          if(matrix[j][l] > highest_score)
+          {
+            highest_score = matrix[j][l];
+          }
+          if(matrix[k][l] > highest_score)
+          {
+            highest_score = matrix[k][l];
+          }
+
+          //add the high score to the vector
+          highest_scores.push_back(highest_score);
+        }
+
+        //get the average of the highest scores for an easy to compare value for the team composition
+        float average_score = 0;
+        for(int l = 0; l < species.size(); l++)
+        {
+          average_score += highest_scores[l];
+        }
+        average_score = average_score / species.size();
+
+        team this_team;
+        this_team.score = average_score;
+        this_team.species1 = species[i];
+        this_team.moveset1 = moveset[i];
+        this_team.species2 = species[j];
+        this_team.moveset2 = moveset[j];
+        this_team.species3 = species[k];
+        this_team.moveset3 = moveset[k];
+
+        //add the current team to the teams vector
+        team_scores.push_back(this_team);
+      }
+    }
+  }
+
+  //sort the team scores
+  //using insertion sort method
+  for(int i = 0; i < team_scores.size(); i++)
+  {
+    int j = i - 1;
+    team temp_team = team_scores[i];
+
+    while(j >= 0 && temp_team.score < team_scores[j].score)
+    {
+      team_scores[j + 1] = team_scores[j];
+      j--;
+    }
+
+    team_scores[j + 1]  = temp_team;
+  }
+
+  //print out the team vector in csv format
+  for(int i = 0; i < team_scores.size(); i++)
+  {
+    cout << team_scores[i].score << "," << team_scores[i].species1 << "," << team_scores[i].moveset1 << "," << team_scores[i].species2 << "," << team_scores[i].moveset2 << "," << team_scores[i].species3 << "," << team_scores[i].moveset3 << endl;
   }
 
 }
