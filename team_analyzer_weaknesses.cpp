@@ -161,11 +161,6 @@ int main()
   //a vector to hold all team scores
   vector<team> team_scores;
 
-  for(int i = 0; i < species_used.size(); i++)
-  {
-    cout << i << " " << species_used[i] << endl;
-  }
-
   //3 nested loops to run through and get all team combinations and associate a score with them
   //the higher the score, the better the team coverage
   for(int i = 0; i < species.size(); i++)
