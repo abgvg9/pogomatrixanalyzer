@@ -47,6 +47,9 @@ int main()
   vector<string> species;
   vector<string> moveset;
 
+  //1d vector to indicate whether to analyze the species or not
+  vector<string> species_used;
+
   //initial string matrix
   //will use string matipulation to extract data and fill the other vectors
   vector<string> initial_matrix;
@@ -68,7 +71,7 @@ int main()
   */
 
   //fill the matrix, species, and moveset vectora
-  //skip indices 0 and 1 of initial_matrix due to having irrelevant information
+  //start at index 2
   for(int i = 2; i < initial_matrix.size(); i++)
   {
     //denote the number of commas encountered
@@ -121,6 +124,26 @@ int main()
 
   }
 
+  //get the values to fill the species_used matrix
+  for(int j = 0; j < initial_matrix[1].size(); j++)
+  {
+    if(species_used.size() == species.size())
+    {
+      break;
+    }
+
+    //take the character in question
+    string character = "";
+    character += initial_matrix[1][j];
+
+    //change behavior, based on whether character is a comma or not
+    //1 indicates to use the species in the team builder, 0 for not use
+    if(character != ",")
+    {
+      species_used.push_back(character);
+    }
+  }
+
   /*
   //print out the constructed vectors
   for(int i = 0; i < species.size(); i++)
@@ -138,43 +161,148 @@ int main()
   //a vector to hold all team scores
   vector<team> team_scores;
 
+  for(int i = 0; i < species_used.size(); i++)
+  {
+    cout << i << " " << species_used[i] << endl;
+  }
+
   //3 nested loops to run through and get all team combinations and associate a score with them
   //the higher the score, the better the team coverage
   for(int i = 0; i < species.size(); i++)
   {
+    bool repeat = true;
+    while(repeat == true)
+    {
+      repeat = false;
+      if(species_used[i] == "0") //see if species is specifically not wanted to be included in analysis(from original matrix)
+      {
+        repeat = true;
+        i++;
+      }else if(i != 0)//make sure species is not a repeated species
+      {
+        if(species[i - 1] == species[i] && species_used[i - 1] == "1")
+        {
+          repeat = true;
+          i++;
+        }
+      }
+
+    }
+    if(i == species.size())
+    {
+      break;
+    }
     for(int j = i + 1; j < species.size(); j++)
     {
       //account for avoiding repeat species
-      if(species[i] == species[j])
+      repeat = true;
+      while(repeat == true)
       {
-        j++;
+        repeat = false;
+        if(species_used[j] == "0")
+        {
+          repeat = true;
+          j++;
+        }else if(species[i] == species[j] && species_used[i] == "1")
+        {
+          repeat = true;
+          j++;
+        }
+
       }
+      if(j == species.size())
+      {
+        break;
+      }
+
       for(int k = j + 1; k < species.size(); k++)
       {
-        if(species[j] == species[k])
+        repeat = true;
+        while(repeat == true)
         {
-          k++;
+          repeat = false;
+          if(species_used[k] == "0")
+          {
+            repeat = true;
+            k++;
+          }else if(species[j] == species[k] && species_used[j] == "1")
+          {
+            repeat = true;
+            k++;
+          }
+
+        }
+        if(k == species.size())
+        {
+          break;
         }
         for(int m = k + 1; m < species.size(); m++)
         {
-          if(species[k] == species[m])
+          repeat = true;
+          while(repeat == true)
           {
-            m++;
+            repeat = false;
+            if(species_used[m] == "0")
+            {
+              repeat = true;
+              m++;
+            }else if(species[m] == species[k] && species_used[k] == "1")
+            {
+              repeat = true;
+              m++;
+            }
+
+          }
+          if(m == species.size())
+          {
+            break;
           }
           for(int n = m + 1; n < species.size(); n++)
           {
-            if(species[m] == species[n])
+            repeat = true;
+            while(repeat == true)
             {
-              n++;
+              repeat = false;
+              if(species_used[n] == "0")
+              {
+                repeat = true;
+                n++;
+              }else if(species[n] == species[m] && species_used[m] == "1")
+              {
+                repeat = true;
+                n++;
+              }
+
+            }
+
+            if(n == species.size())
+            {
+              break;
             }
             for(int o = n + 1; o < species.size(); o++)
             {
-              if(species[n] == species[o])
+              repeat = true;
+              while(repeat == true)
               {
-                o++;
+                repeat = false;
+                if(species_used[o] == "0")
+                {
+                  repeat = true;
+                  o++;
+                }else if(species[o] == species[n] && species_used[n] == "1")
+                {
+                  repeat = true;
+                  o++;
+                }
+
               }
 
-              //cout << "i" << i << ", j" << j << ", k" << k << ", m" << m << ", n" << n << endl;
+              if(o == species.size())
+              {
+                break;
+              }
+
+              //cout << "i" << i << ", j" << j << ", k" << k << ", m" << m << ", n" << n << ", o" << o << endl;
 
               //vector to hold the highest scores for all matrix matchups of the 3 species in question
               vector<float> average_scores;
@@ -282,7 +410,7 @@ int main()
   //print out the team vector in csv format
   for(int i = 0; i < team_scores.size(); i++)
   {
-    cout << team_scores[i].score << "," << team_scores[i].species1 << "," << team_scores[i].moveset1 << "," << team_scores[i].species2 << "," << team_scores[i].moveset2 << "," << team_scores[i].species3 << "," << team_scores[i].moveset3;
+    cout << team_scores[i].score << "," << team_scores[i].species1 << "," << team_scores[i].moveset1 << "," << team_scores[i].species2 << "," << team_scores[i].moveset2 << "," << team_scores[i].species3 << "," << team_scores[i].moveset3 << ",";
     cout << team_scores[i].species4 << "," << team_scores[i].moveset4 << "," << team_scores[i].species5 << "," << team_scores[i].moveset5 << "," << team_scores[i].species6 << "," << team_scores[i].moveset6 << endl;
   }
 
