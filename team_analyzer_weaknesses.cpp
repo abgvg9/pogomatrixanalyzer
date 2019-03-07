@@ -144,14 +144,36 @@ int main()
   {
     for(int j = i + 1; j < species.size(); j++)
     {
+      //account for avoiding repeat species
+      if(species[i] == species[j])
+      {
+        j++;
+      }
       for(int k = j + 1; k < species.size(); k++)
       {
+        if(species[j] == species[k])
+        {
+          k++;
+        }
         for(int m = k + 1; m < species.size(); m++)
         {
+          if(species[k] == species[m])
+          {
+            m++;
+          }
           for(int n = m + 1; n < species.size(); n++)
           {
+            if(species[m] == species[n])
+            {
+              n++;
+            }
             for(int o = n + 1; o < species.size(); o++)
             {
+              if(species[n] == species[o])
+              {
+                o++;
+              }
+
               //cout << "i" << i << ", j" << j << ", k" << k << ", m" << m << ", n" << n << endl;
 
               //vector to hold the highest scores for all matrix matchups of the 3 species in question
@@ -227,6 +249,23 @@ int main()
                 team_scores[0].moveset5 = this_team.moveset5;
                 team_scores[0].species6 = this_team.species6;
                 team_scores[0].moveset6 = this_team.moveset6;
+
+                //sort the team scores
+                //using insertion sort method
+                //sort to ensure the lowest score is at the bottom
+                for(int i = 0; i < team_scores.size(); i++)
+                {
+                  int j = i - 1;
+                  team temp_team = team_scores[i];
+
+                  while(j >= 0 && temp_team.score < team_scores[j].score)
+                  {
+                    team_scores[j + 1] = team_scores[j];
+                    j--;
+                  }
+
+                  team_scores[j + 1]  = temp_team;
+                }
 
               }
 
